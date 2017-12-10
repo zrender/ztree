@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="zTreeStyle/zTreeStyle.css" type="text/css">
   <script type="text/javascript" src="jquery-1.4.2.js"></script>
   <script type="text/javascript" src="jquery.ztree.core-3.x.js"></script>
+  <script src='https://cdn.jsdelivr.net/g/lodash@4(lodash.min.js+lodash.fp.min.js)'></script>
   <SCRIPT LANGUAGE="JavaScript">
    var zTreeObj;
    // zTree 的参数配置，深入使用请参考 API 文档（setting 配置详解）
@@ -18,6 +19,17 @@
    {name:"test2", open:true, children:[
       {name:"test2_1"}, {name:"test2_2"}]}
    ];
+   let statusMergedTree = function (source, targe, property) {
+       return _.map(target, (item) => {{
+           let targetItem = _.find(source, {
+               id: item.id
+           })
+           return {
+            ...item,
+            open: targetItem ? targetItem[property] : item[property]
+           }
+       }})
+   }
    $(document).ready(function(){
       zTreeObj = $.fn.zTree.init($("#treeDemo"), setting, zNodes);
    });
