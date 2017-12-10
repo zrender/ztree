@@ -4,9 +4,9 @@
   <TITLE> ZTREE DEMO </TITLE>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <link rel="stylesheet" href="demoStyle/demo.css" type="text/css">
-  <link rel="stylesheet" href="zTreeStyle/zTreeStyle.css" type="text/css">
-  <script type="text/javascript" src="jquery-1.4.2.js"></script>
-  <script type="text/javascript" src="jquery.ztree.core-3.x.js"></script>
+  <link rel="stylesheet" href="http://www.treejs.cn/v3/css/zTreeStyle/zTreeStyle.css" type="text/css">
+  <script type="text/javascript" src="http://www.treejs.cn/v3/js/jquery-1.4.4.min.js"></script>
+  <script type="text/javascript" src="http://www.treejs.cn/v3/js/jquery.ztree.core.js"></script>
   <script src='https://cdn.jsdelivr.net/g/lodash@4(lodash.min.js+lodash.fp.min.js)'></script>
   <SCRIPT LANGUAGE="JavaScript">
    var zTreeObj;
@@ -14,25 +14,71 @@
    var setting = {};
    // zTree 的数据属性，深入使用请参考 API 文档（zTreeNode 节点数据详解）
    var zNodes = [
-   {name:"test1", open:true, children:[
+   {name:"test1", open:true, id:'test1',children:[
       {name:"test1_1"}, {name:"test1_2"}]},
-   {name:"test2", open:true, children:[
+   {name:"test2", open:true, id:'test2', children:[
       {name:"test2_1"}, {name:"test2_2"}]}
    ];
-   let statusMergedTree = function (source, targe, property) {
-       return _.map(target, (item) => {{
-           let targetItem = _.find(source, {
-               id: item.id
-           })
-           return {
-            ...item,
-            open: targetItem ? targetItem[property] : item[property]
-           }
-       }})
-   }
+   let newFetchedTree = [
+   {name:"test0", open:false, children:[
+   {name:"test0_1"}, {name:"test0_2"}]},
+{name:"test1",id:'test1', open:false, children:[
+   {name:"test1_1", id: 'test_1'}, {name:"test1_2", id: 'test1_2'}]},
+{name:"test2", open:false,id:'test2', children:[
+   {name:"test2_1", id:'test2_1'}, {name:"test2_2", id: 'test2_2'}]}
+];
+   // merge property value into target
+   let statusMerge = function (source, target, property) {
+    return _.map(target, (item) => {
+        let sourceItem = _.find(source, {
+            id: item.id
+        })
+        console.log(sourceItem)
+        return {
+         ...item,
+         open: sourceItem ? sourceItem[property] : item[property]
+        }
+    })
+}
    $(document).ready(function(){
       zTreeObj = $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+      let oldTreeData = zTreeObj.getNodes()
+     setTimeout(()=> {
+      let newTree = statusMerge(oldTreeData, newFetchedTree, 'open')
+      console.log(newTree)
+      zTreeObj = $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+     }, 4000)
    });
+
+//    var zNodes = [
+//    {name:"test1", open:true, id:'test1',children:[
+//       {name:"test1_1"}, {name:"test1_2"}]},
+//    {name:"test2", open:true, id:'test2', children:[
+//       {name:"test2_1"}, {name:"test2_2"}]}
+//    ];
+//    let newFetchedTree = [
+//       {name:"test0", open:false, children:[
+//       {name:"test0_1"}, {name:"test0_2"}]},
+//    {name:"test1",id:'test1', open:false, children:[
+//       {name:"test1_1", id: 'test_1'}, {name:"test1_2", id: 'test1_2'}]},
+//    {name:"test2", open:false,id:'test2', children:[
+//       {name:"test2_1", id:'test2_1'}, {name:"test2_2", id: 'test2_2'}]}
+//    ];
+//    // merge property value into target
+//    let statusMerge = function (source, target, property) {
+//        return _.map(target, (item) => {
+//            let sourceItem = _.find(source, {
+//                id: item.id
+//            })
+//            console.log(sourceItem)
+//            return {
+//             ...item,
+//             open: sourceItem ? sourceItem[property] : item[property]
+//            }
+//        })
+//    }
+// let newTree = statusMerge(zNodes, newFetchedTree, 'open')
+// console.log(newTree)
   </SCRIPT>
  </HEAD>
 <BODY>
